@@ -6,11 +6,11 @@ import RatingFilter from './RatingFilter';
 class MainForm extends Component {
   render() {
     return (
-      <form id="main-form">
-            {/*Search Bar*/}
-            {/*Print type*/}
-            {/*rating */}
-        </form>
+      <div id="main-form">
+          <SearchBar setSearch={this.props.setSearch}/>
+          <TypeFilter setType={this.props.setType}/>
+          <RatingFilter setRating={this.props.setRating}/>
+      </div>
     )
   }
 }

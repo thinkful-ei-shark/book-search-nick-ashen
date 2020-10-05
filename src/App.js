@@ -29,10 +29,25 @@ class App extends Component {
     });
   }
 
+  toggleExpand = (id) => {
+    let books = [...this.state.books];
+    books = books.map(book => {
+      if (book.id === id) {
+        book.expanded = !book.expanded;
+      }
+      return book;
+    });
+    
+    this.setState({
+      books
+    });
+  }
+
   fetchBooks = () => {
     if(!this.state.search){
       throw new Error('search term empty')
     }
+
     let url = `https://www.googleapis.com/books/v1/volumes?key=AIzaSyBeH7luRS-pJMDQ8_dMmLsAzyvxhPYd7nQ&q=` 
       + encodeURIComponent(this.state.search)
       if (this.state.printType){
@@ -49,21 +64,24 @@ class App extends Component {
         }
       })
       .then(rjson => {
-        console.log(rjson.items)
         let books = rjson.items.map(item => {
-          if (item.volumeInfo.averageRating >= this.state.rating) {
+          if (this.state.rating > 0 && item.volumeInfo.averageRating >= this.state.rating
+              || this.state.rating === 0) {
             let book = {}
+            book.id = item.id;
+            book.averageRating = item.volumeInfo.averageRating;
             book.title = item.volumeInfo.title
             book.author = item.volumeInfo.authors
-            book.price = item.volumeInfo.saleInfo.listPrice.amount
+            book.price = item.saleInfo.hasOwnProperty('listPrice') 
+              ? item.saleInfo.listPrice.amount : 'Not for sale.'  
             book.img = item.volumeInfo.imageLinks.thumbnail
             book.summary = item.volumeInfo.description
             book.pageCount = item.volumeInfo.pageCount
-
+            book.expanded = false;
             return book
           }
         });
-        console.log(books)
+        books = books.filter(book => book);
         this.setState({ books });
       })
       .catch(error => this.setState({ error }));
@@ -75,10 +93,10 @@ class App extends Component {
         <header>
           <h1>Google Book Search</h1>
         </header>
-        <div className="error">{this.state.error? this.state.error.message: ""}</div>
+        <div className="error">{this.state.error ? this.state.error.message: ""}</div>
         <main>
           <MainForm fetchBooks={this.fetchBooks} setSearch={this.setSearch} setType={this.setType} setRating={this.setRating} />
-          <BookList books={this.state.books}/>
+          {this.state.books ? <BookList books={this.state.books} toggleExpand={this.toggleExpand} /> : ''}
         </main>
       </div>
     );

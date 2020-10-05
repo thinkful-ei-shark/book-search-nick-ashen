@@ -1,16 +1,24 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import SearchBar from '../SearchBar/SearchBar';
 import TypeFilter from '../TypeFilter/TypeFilter';
 import RatingFilter from '../RatingFilter/RatingFilter';
 
 class MainForm extends Component {
+  handleSearchSubmit(e) {
+    e.preventDefault();
+    this.props.fetchBooks()
+  }
+
   render() {
     return (
-      <div id="main-form">
-          <SearchBar fetchBooks={this.props.fetchBooks} setSearch={this.props.setSearch}/>
-          <TypeFilter fetchBooks={this.props.fetchBooks} setType={this.props.setType}/>
-          <RatingFilter fetchBooks={this.props.fetchBooks} setRating={this.props.setRating}/>
-      </div>
+      <form id="search-bar-form" onSubmit={e => this.handleSearchSubmit(e)}>
+        <div className="search-and-button">
+          <SearchBar setSearch={this.props.setSearch} />
+          <button type="submit" form="search-bar-form">Search</button>
+        </div>
+        <TypeFilter setType={this.props.setType} />
+        <RatingFilter setRating={this.props.setRating} />
+      </form>
     )
   }
 }

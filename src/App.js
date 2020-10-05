@@ -5,7 +5,8 @@ class App extends Component {
   state = {
     search: '',
     type: '',
-    rating: ''
+    rating: '',
+    error: ''
   }
 
   setSearch(search) {
@@ -27,7 +28,32 @@ class App extends Component {
   }
 
   componentDidUpdate() {
-    // do a fetch or tell booklist to fetch
+    const url = `https://www.googleapis.com/books/v1/volumes?q=` + this.state.search
+    fetch(url)
+      .then(r =>{
+        if(!r.ok){
+          throw new Error (r.statusText)
+        }
+        else {
+          return r.json
+        }
+        //title, price, author, pic, shortsum
+      })
+      .then(rjson => rjson.items.map(item => {
+        let book = {}         
+        book.title = item.volumeInfo.title
+        book.author = item.volumeInfo.authors
+        book.price = item.volumeInfo.saleInfo.listPrice.amount
+        book.img = item.volumeInfo.imageLinks.thumbnail
+        book.summary = item.volumeInfo.description
+        book.pageCount = item.volumeInfo.pageCount
+
+        return book
+      }))
+      .catch(error => this.setState({error}));
+
+      // this.setState({
+
   }
 
   render() {

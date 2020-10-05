@@ -1,4 +1,4 @@
-//API KEY https://github.com/ashen-develops/laptop-customizer-assignment
+//API KEY AIzaSyBeH7luRS-pJMDQ8_dMmLsAzyvxhPYd7nQ
 
 //fuctionality
 //1) Provide search form

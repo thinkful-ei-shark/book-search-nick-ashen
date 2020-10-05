@@ -9,7 +9,7 @@ class RatingFilter extends Component {
   render() {
     return (
       <div className="filter-type-container">
-        <label for="filter-avg-rating">Average Rating</label>
+        <label htmlFor="filter-avg-rating">Average Rating</label>
             <select id="filter-avg-rating" onChange={e => this.handleRatingSelect(e)}>
               <option value={1}>1+</option>
               <option value={2}>2+</option>

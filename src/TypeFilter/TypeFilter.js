@@ -9,8 +9,8 @@ class TypeFilter extends Component {
   render() {
     return (
       <div className="filter-type-container">
-        <label for="filter-print-type">Print Type</label>
-        <select id="filter-print-type" onChange={e => handleTypeSelect(e)}>
+        <label htmlFor="filter-print-type">Print Type</label>
+        <select id="filter-print-type" onChange={e => this.handleTypeSelect(e)}>
         <option value="all">All</option>
           <option value="book">Books</option>
           <option value="magazine">Magazines</option>

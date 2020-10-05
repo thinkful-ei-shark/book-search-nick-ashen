@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import MainForm from './MainForm';
-import BookList from './BookList';
+import MainForm from './MainForm/MainForm';
+import BookList from './BookList/BookList';
 
 class App extends Component {
   state = {
@@ -11,28 +11,33 @@ class App extends Component {
     error: null
   }
 
-  setSearch(search) {
+  setSearch = (search) => {
     this.setState({
       search
     });
   }
 
-  setType(type) {
+  setType = (type) => {
     this.setState({
       type
     });
   }
 
-  setRating(rating) {
+  setRating = (rating) => {
     this.setState({
       rating
     });
   }
 
-  componentDidUpdate() {
-    const url = `https://www.googleapis.com/books/v1/volumes?q=` 
+  fetchBooks = () => {
+    if(!this.state.search){
+      throw new Error('search term empty')
+    }
+    let url = `https://www.googleapis.com/books/v1/volumes?key=AIzaSyBeH7luRS-pJMDQ8_dMmLsAzyvxhPYd7nQ&q=` 
       + encodeURIComponent(this.state.search)
-      + `&printType=${this.state.type.toUpperCase()}`;
+      if (this.state.printType){
+        url += `&printType=${this.state.type.toUpperCase()}`;
+      }
 
     fetch(url)
       .then(r => {
@@ -40,10 +45,11 @@ class App extends Component {
           throw new Error(r.statusText)
         }
         else {
-          return r.json
+          return r.json()
         }
       })
       .then(rjson => {
+        console.log(rjson.items)
         let books = rjson.items.map(item => {
           if (item.volumeInfo.averageRating >= this.state.rating) {
             let book = {}
@@ -57,6 +63,7 @@ class App extends Component {
             return book
           }
         });
+        console.log(books)
         this.setState({ books });
       })
       .catch(error => this.setState({ error }));
@@ -68,9 +75,9 @@ class App extends Component {
         <header>
           <h1>Google Book Search</h1>
         </header>
-        <div className="error">{this.state.error}</div>
+        <div className="error">{this.state.error? this.state.error.message: ""}</div>
         <main>
-          <MainForm setSearch={this.setSearch} setType={this.setType} setRating={this.setRating} />
+          <MainForm fetchBooks={this.fetchBooks} setSearch={this.setSearch} setType={this.setType} setRating={this.setRating} />
           <BookList books={this.state.books}/>
         </main>
       </div>
